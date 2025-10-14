@@ -9,8 +9,8 @@ oracledb.init_oracle_client(lib_dir=None)  # Optional if thin mode is fine
 # Connection
 dsn = oracledb.makedsn("localhost", 1521, service_name="orcl")  # Update as needed
 connection = oracledb.connect(
-    user="sys",
-    password="Uit54321",
+    user="YOURUSERNAME",
+    password="YOURPASSWORD",
     dsn=dsn,
     mode=oracledb.SYSDBA
 )

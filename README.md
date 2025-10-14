@@ -52,8 +52,8 @@ Update the credentials in your `oracle_db.py` file:
 ```python
 dsn = oracledb.makedsn("localhost", 1521, service_name="orcl")
 connection = oracledb.connect(
-    user="sys",
-    password="Ui543",
+   user="YOURUSERNAME",
+    password="YOURPASSWORD",
     dsn=dsn,
     mode=oracledb.SYSDBA
 )
