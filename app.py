@@ -86,39 +86,53 @@ elif menu == "View Reports":
     if df.empty:
         st.info("No transactions yet.")
     else:
-        for i, row in df.iterrows():
-            with st.expander(f"🧾 {row['description']} — {row['txn_date']}"):
-                st.write(f"**Debit**: {row['debit_account']} — {row['debit_amount']}")
-                st.write(f"**Credit**: {row['credit_account']} — {row['credit_amount']}")
-                
-                col1, col2 = st.columns([1, 1])
-                with col1:
-                    if st.button("✏️ Edit", key=f"edit_{row['txn_id']}"):
-                        with st.form(f"form_edit_{row['txn_id']}"):
-                            new_date = st.date_input("Date", value=pd.to_datetime(row['txn_date']))
-                            new_desc = st.text_input("Description", row['description'])
-                            new_debit = st.text_input("Debit Account", row['debit_account'])
-                            new_debit_amt = st.number_input("Debit Amount", value=float(row['debit_amount']), min_value=0.01, step=0.01)
-                            new_credit = st.text_input("Credit Account", row['credit_account'])
-                            new_credit_amt = st.number_input("Credit Amount", value=float(row['credit_amount']), min_value=0.01, step=0.01)
-                            submitted = st.form_submit_button("💾 Save Changes")
+      for i, row in df.iterrows():
+       with st.expander(f"🧾 {row['description']} — {row['txn_date']}"):
+        st.write(f"**Debit:** {row['debit_account']} — {row['debit_amount']}")
+        st.write(f"**Credit:** {row['credit_account']} — {row['credit_amount']}")
 
-                            if submitted:
-                                if new_debit == new_credit:
-                                    st.error("⚠️ Debit and Credit accounts must be different.")
-                                elif new_debit_amt != new_credit_amt:
-                                    st.error("⚠️ Amounts must be equal.")
-                                else:
-                                    update_transaction(row['txn_id'], {
-                                        "date": str(new_date),
-                                        "description": new_desc,
-                                        "debit_account": new_debit,
-                                        "debit_amount": new_debit_amt,
-                                        "credit_account": new_credit,
-                                        "credit_amount": new_credit_amt
-                                    })
-                                    st.success("✅ Updated!")
-                                    st.rerun()
+        # Create two columns for buttons
+        col1, col2 = st.columns([1, 1])
+
+        # --- EDIT BUTTON ---
+        if col1.button("✏️ Edit", key=f"edit_btn_{row['txn_id']}"):
+            st.session_state.editing_id = row['txn_id']
+
+        # --- DELETE BUTTON ---
+        if col2.button("🗑️ Delete", key=f"del_btn_{row['txn_id']}"):
+            delete_transaction(row['txn_id'])
+            st.success("✅ Transaction deleted.")
+            st.rerun()
+
+        # --- EDIT FORM ---
+        if "editing_id" in st.session_state and st.session_state.editing_id == row['txn_id']:
+            with st.form(f"edit_form_{row['txn_id']}"):
+                new_date = st.date_input("📅 Date", value=pd.to_datetime(row['txn_date']))
+                new_desc = st.text_input("📝 Description", value=row['description'])
+                new_debit = st.text_input("📥 Debit Account", value=row['debit_account'])
+                new_debit_amt = st.number_input("💸 Debit Amount", value=float(row['debit_amount']), min_value=0.01)
+                new_credit = st.text_input("📤 Credit Account", value=row['credit_account'])
+                new_credit_amt = st.number_input("💵 Credit Amount", value=float(row['credit_amount']), min_value=0.01)
+                
+                submitted = st.form_submit_button("💾 Save Changes")
+
+                if submitted:
+                    if new_debit == new_credit:
+                        st.error("⚠️ Debit and Credit accounts must be different.")
+                    elif new_debit_amt != new_credit_amt:
+                        st.error("⚠️ Amounts must be equal.")
+                    else:
+                        update_transaction(row['txn_id'], {
+                            "date": str(new_date),
+                            "description": new_desc,
+                            "debit_account": new_debit,
+                            "debit_amount": new_debit_amt,
+                            "credit_account": new_credit,
+                            "credit_amount": new_credit_amt
+                        })
+                        st.success("✅ Transaction updated successfully!")
+                        del st.session_state.editing_id
+                        st.rerun()
 
                 with col2:
                     if st.button("🗑️ Delete", key=f"del_{row['txn_id']}"):

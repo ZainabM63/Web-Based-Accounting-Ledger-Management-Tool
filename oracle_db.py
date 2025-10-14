@@ -9,8 +9,8 @@ oracledb.init_oracle_client(lib_dir=None)  # Optional if thin mode is fine
 # Connection
 dsn = oracledb.makedsn("localhost", 1521, service_name="orcl")  # Update as needed
 connection = oracledb.connect(
-    user="YOURUSERNAME",
-    password="YOURPASSWORD",
+    user="YOUR USERNAME",
+    password="YOUR PASSWORD",
     dsn=dsn,
     mode=oracledb.SYSDBA
 )
@@ -50,23 +50,34 @@ def add_transaction(user_id, data):
 
 # Get all user transactions as DataFrame
 def get_user_transactions(user_id):
-    query = """
-    SELECT txn_date AS "txn_date",
-           description AS "description",
-           debit_account AS "debit_account",
-           debit_amount AS "debit_amount",
-           credit_account AS "credit_account",
-           credit_amount AS "credit_amount"
+   query = """
+   SELECT txn_id AS "txn_id",
+       txn_date AS "txn_date",
+       description AS "description",
+       debit_account AS "debit_account",
+       debit_amount AS "debit_amount",
+       credit_account AS "credit_account",
+       credit_amount AS "credit_amount"
     FROM transactions
     WHERE user_id = :user_id
     ORDER BY txn_date
     """
-    return pd.read_sql(query, con=connection, params={"user_id": user_id})
+   return pd.read_sql(query, con=connection, params={"user_id": user_id})
+from datetime import datetime, date
+
 def update_transaction(txn_id, updated_data):
     with connection.cursor() as cur:
+        # ✅ Convert to datetime.date if it's a string
+        txn_date = updated_data["date"]
+        if isinstance(txn_date, str):
+            try:
+                txn_date = datetime.strptime(txn_date, "%Y-%m-%d").date()
+            except ValueError:
+                txn_date = datetime.strptime(txn_date, "%d/%m/%Y").date()
+
         cur.execute("""
-            UPDATE transactions SET
-                txn_date = :1,
+            UPDATE transactions
+            SET txn_date = :1,
                 description = :2,
                 debit_account = :3,
                 debit_amount = :4,
@@ -74,7 +85,7 @@ def update_transaction(txn_id, updated_data):
                 credit_amount = :6
             WHERE txn_id = :7
         """, (
-            updated_data["date"],
+            txn_date,
             updated_data["description"],
             updated_data["debit_account"],
             updated_data["debit_amount"],
@@ -83,6 +94,7 @@ def update_transaction(txn_id, updated_data):
             txn_id
         ))
         connection.commit()
+
 
 def delete_transaction(txn_id):
     with connection.cursor() as cur:
