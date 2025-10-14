@@ -1,6 +1,4 @@
-Here’s your **README.md** rewritten in **proper Markdown format**, clean and ready to use on GitHub or any documentation page 👇
 
----
 
 ````markdown
 # 📘 Accounting Dashboard (Streamlit + OracleDB)
