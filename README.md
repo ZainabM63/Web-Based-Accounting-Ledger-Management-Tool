@@ -1,5 +1,10 @@
 
+## 👩‍💻 Developer
 
+**Author:** Zainab Mughal
+**Focus:** Cybersecurity & Web App Development
+
+---
 
 # 📘 Accounting Dashboard (Streamlit + OracleDB)
 
