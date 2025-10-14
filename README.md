@@ -154,11 +154,6 @@ The dashboard will open at:
 | `Invalid credentials`                     | Check hashed password logic and username existence.  |
 | `Streamlit rerun loop`                    | Make sure session state keys are properly set.       |
 
----
-
-## 🧾 License
-
-This project is licensed under the **MIT License** — free for personal and educational use.
 
 ---
 
