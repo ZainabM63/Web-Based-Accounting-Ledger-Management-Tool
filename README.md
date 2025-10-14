@@ -1,6 +1,6 @@
 
 
-````markdown
+
 # 📘 Accounting Dashboard (Streamlit + OracleDB)
 
 A **Streamlit-based Accounting Dashboard** connected to **Oracle Database**, allowing users to **register, log in, and manage journal transactions** easily.  
