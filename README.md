@@ -2,7 +2,7 @@
 ## 👩‍💻 Developer
 
 **Author:** Zainab Mughal
-**Focus:** Cybersecurity & Web App Development
+**Focus:** Accounting and Finance 
 
 ---
 
