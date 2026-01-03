@@ -5,14 +5,14 @@ from hashlib import sha256
 # =============================
 # DATABASE CONNECTION (Supabase)
 # =============================
-DATABASE_URL="postgresql://postgres.swwkwgfhmvdrfnbeipcs:[YOUR-PASSWORD]@aws-1-ap-northeast-2.pooler.supabase.com:5432/postgres"
-
 connection = psycopg2.connect(
-    DATABASE_URL,
-    password="Mughal67$%##",
-    sslmode="require"
-)
-
+ host="aws-1-ap-northeast-2.pooler.supabase.com",
+ port=5432,
+ database="postgres",
+ user="postgres.swwkwgfhmvdrfnbeipcs",
+  password="Mughal67$%##",       
+ sslmode="require"
+ )
 # =============================
 # PASSWORD HASHING
 # =============================
