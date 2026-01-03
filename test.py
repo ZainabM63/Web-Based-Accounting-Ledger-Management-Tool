@@ -5,7 +5,7 @@ connection = psycopg2.connect(
  port=5432,
  database="postgres",
  user="postgres.swwkwgfhmvdrfnbeipcs",
-  password="babychand67@#",       
+  password="Mughal67$%##",       
  sslmode="require"
  )
 

@@ -9,7 +9,7 @@ DATABASE_URL="postgresql://postgres.swwkwgfhmvdrfnbeipcs:[YOUR-PASSWORD]@aws-1-a
 
 connection = psycopg2.connect(
     DATABASE_URL,
-    password="babychand67@#",
+    password="Mughal67$%##",
     sslmode="require"
 )
 
