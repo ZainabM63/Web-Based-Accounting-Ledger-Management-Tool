@@ -38,7 +38,7 @@ A comprehensive web-based application for managing accounting ledgers, tracking 
    ```bash
    git clone https://github.com/ZainabM63/Web-Based-Accounting-Ledger-Management-Tool.git
 ````
-
+````
 2. Navigate to the project directory:
 
    ```bash
