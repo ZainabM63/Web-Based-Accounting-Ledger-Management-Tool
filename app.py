@@ -11,7 +11,7 @@ from oracle_db import (
 # Page Config
 # =========================
 st.set_page_config(
-    page_title="📘 Accounting Dashboard",
+    page_title="ledgable",
     layout="wide",
     initial_sidebar_state="expanded"
 )
@@ -88,7 +88,7 @@ if "user_id" not in st.session_state:
     # Adding a clean header with a slight top margin
     st.markdown("""
         <div style='text-align:center; margin-top:60px; margin-bottom:20px;'>
-            <h1 style='color:#1e293b; font-size: 42px; margin-bottom:0;'>📘 Accounting Dashboard</h1>
+            <h1 style='color:#1e293b; font-size: 42px; margin-bottom:0;'>📘 ledgable</h1>
             <p style='color:#64748b; font-size: 18px;'>Secure • Accurate • Double-Entry Ledger</p>
         </div>
     """, unsafe_allow_html=True)
@@ -144,7 +144,7 @@ st.markdown(f"""
 <div class="card" style="display:flex; align-items:center; gap:20px; border-left: 8px solid #2563eb;">
     <div style="font-size:45px;">📘</div>
     <div>
-        <h2 style="margin:0; color:#1e293b;">Accounting Dashboard</h2>
+        <h2 style="margin:0; color:#1e293b;">ledgable</h2>
         <p style="margin:0; color:#64748b; font-weight:500;">Welcome back, {st.session_state.username} | {pd.Timestamp.now().strftime('%Y-%m-%d')}</p>
     </div>
 </div>
@@ -192,7 +192,7 @@ menu = st.sidebar.radio(
 st.sidebar.container(height=400, border=False) 
 
 st.sidebar.divider()
-st.sidebar.caption("© 2026 Accounting Dashboard")
+st.sidebar.caption("© 2026 ledgable")
 # =========================
 # DASHBOARD CONTENT
 # =========================
