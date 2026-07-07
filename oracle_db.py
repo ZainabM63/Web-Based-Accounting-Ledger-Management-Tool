@@ -5,25 +5,28 @@ from hashlib import sha256
 # =============================
 # DATABASE CONNECTION (Neon)
 # =============================
-connection = psycopg2.connect(
-    host="ep-bitter-glitter-at1ilmu3-pooler.c-9.us-east-1.aws.neon.tech",
-    port=5432,
-    database="neondb",
-    user="neondb_owner",
-    password="npg_wRnHDa5IQfr7",
-    sslmode="require"
-)
-# =============================
-# PASSWORD HASHING
-# =============================
-def hash_password(password: str) -> str:
-    return sha256(password.encode()).hexdigest()
+connection = None
 
-# =============================
-# CREATE TABLES
-# =============================
-def create_tables():
-    with connection.cursor() as cur:
+def get_connection():
+    global connection
+    try:
+        cur = connection.cursor()
+        cur.execute("SELECT 1")
+        cur.close()
+    except (psycopg2.InterfaceError, psycopg2.OperationalError, AttributeError):
+        connection = psycopg2.connect(
+            host="ep-bitter-glitter-at1ilmu3-pooler.c-9.us-east-1.aws.neon.tech",
+            port=5432,
+            database="neondb",
+            user="neondb_owner",
+            password="npg_wRnHDa5IQfr7",
+            sslmode="require"
+        )
+        _init_tables(connection)
+    return connection
+
+def _init_tables(conn):
+    with conn.cursor() as cur:
         cur.execute("""
             CREATE TABLE IF NOT EXISTS userzs (
                 user_id SERIAL PRIMARY KEY,
@@ -43,16 +46,23 @@ def create_tables():
                 credit_amount NUMERIC(12,2)
             )
         """)
-        connection.commit()
+        conn.commit()
 
-create_tables()
+get_connection()
+
+# =============================
+# PASSWORD HASHING
+# =============================
+def hash_password(password: str) -> str:
+    return sha256(password.encode()).hexdigest()
 
 # =============================
 # REGISTER USER
 # =============================
 def register_user(username, password):
+    conn = get_connection()
     try:
-        with connection.cursor() as cur:
+        with conn.cursor() as cur:
             cur.execute(
                 """
                 INSERT INTO userzs (username, password)
@@ -60,17 +70,18 @@ def register_user(username, password):
                 """,
                 (username, hash_password(password))
             )
-            connection.commit()
+            conn.commit()
         return True
     except psycopg2.errors.UniqueViolation:
-        connection.rollback()
+        conn.rollback()
         return False
 
 # =============================
 # LOGIN USER
 # =============================
 def login_user(username, password):
-    with connection.cursor() as cur:
+    conn = get_connection()
+    with conn.cursor() as cur:
         cur.execute(
             """
             SELECT user_id
@@ -86,7 +97,8 @@ def login_user(username, password):
 # ADD TRANSACTION
 # =============================
 def add_transaction(user_id, data):
-    with connection.cursor() as cur:
+    conn = get_connection()
+    with conn.cursor() as cur:
         cur.execute(
             """
             INSERT INTO transactions
@@ -105,7 +117,7 @@ def add_transaction(user_id, data):
                 data["credit_amount"]
             )
         )
-        connection.commit()
+        conn.commit()
 
 # =============================
 # FETCH TRANSACTIONS
@@ -123,7 +135,7 @@ def get_user_transactions(user_id):
     WHERE user_id = %s
     ORDER BY txn_date
     """
-    return pd.read_sql(query, con=connection, params=(user_id,))
-cur = connection.cursor()
+    return pd.read_sql(query, con=get_connection(), params=(user_id,))
+cur = get_connection().cursor()
 cur.execute("SELECT now();")
 print(cur.fetchone())
