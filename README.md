@@ -23,12 +23,13 @@ A comprehensive web-based application for managing accounting ledgers, tracking 
 
 - **Security**
   - Passwords are hashed using SHA-256
-  - Database connections secured using SSL (Supabase PostgreSQL)
+  - Database connections secured using SSL (Neon PostgreSQL)
 
 - **Database Integration**
-  - Uses Supabase PostgreSQL for data storage
+  - Uses Neon PostgreSQL for data storage (always-on, no 7-day pause)
   - Supports multiple users and transactions
   - Fetches transactions using SQL queries with pandas
+  - Auto-creates tables on startup (no manual schema setup required)
 
 ---
 
@@ -51,7 +52,7 @@ A comprehensive web-based application for managing accounting ledgers, tracking 
    pip install psycopg2-binary pandas
    ```
 
-4. Update `DATABASE_URL` in your Python scripts with your Supabase credentials.
+4. Update the database credentials in `oracle_db.py` with your Neon connection string.
 
 ---
 
@@ -71,10 +72,14 @@ A comprehensive web-based application for managing accounting ledgers, tracking 
 
 ```
 expense_tracker_oracle/
-├── test.py                # Test database connection
+├── app.py                 # Main Streamlit application
 ├── oracle_db.py           # Database connection and CRUD operations
+├── test.py                # Test database connection
+├── index.html             # Netlify embed wrapper
+├── netlify.toml           # Netlify deployment config
+├── setup.sh               # Streamlit Cloud setup script
+├── requirements.txt       # Python dependencies
 ├── README.md              # Project documentation
-└── other project files
 ```
 
 

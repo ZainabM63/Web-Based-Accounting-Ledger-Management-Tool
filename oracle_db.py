@@ -3,21 +3,49 @@ import pandas as pd
 from hashlib import sha256
 
 # =============================
-# DATABASE CONNECTION (Supabase)
+# DATABASE CONNECTION (Neon)
 # =============================
 connection = psycopg2.connect(
- host="aws-1-ap-northeast-2.pooler.supabase.com",
- port=5432,
- database="postgres",
- user="postgres.swwkwgfhmvdrfnbeipcs",
-  password="Mughal67$%##",       
- sslmode="require"
- )
+    host="ep-bitter-glitter-at1ilmu3-pooler.c-9.us-east-1.aws.neon.tech",
+    port=5432,
+    database="neondb",
+    user="neondb_owner",
+    password="npg_wRnHDa5IQfr7",
+    sslmode="require"
+)
 # =============================
 # PASSWORD HASHING
 # =============================
 def hash_password(password: str) -> str:
     return sha256(password.encode()).hexdigest()
+
+# =============================
+# CREATE TABLES
+# =============================
+def create_tables():
+    with connection.cursor() as cur:
+        cur.execute("""
+            CREATE TABLE IF NOT EXISTS userzs (
+                user_id SERIAL PRIMARY KEY,
+                username VARCHAR(255) UNIQUE NOT NULL,
+                password VARCHAR(64) NOT NULL
+            )
+        """)
+        cur.execute("""
+            CREATE TABLE IF NOT EXISTS transactions (
+                transaction_id SERIAL PRIMARY KEY,
+                user_id INT REFERENCES userzs(user_id),
+                txn_date DATE,
+                description TEXT,
+                debit_account VARCHAR(255),
+                debit_amount NUMERIC(12,2),
+                credit_account VARCHAR(255),
+                credit_amount NUMERIC(12,2)
+            )
+        """)
+        connection.commit()
+
+create_tables()
 
 # =============================
 # REGISTER USER
